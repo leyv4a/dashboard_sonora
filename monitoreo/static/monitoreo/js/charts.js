@@ -78,13 +78,13 @@ function createChart(tipo) {
                 data: [],
                 borderColor: colors.border,
                 backgroundColor: colors.bg,
-                borderWidth: 3,
+                borderWidth: 2.5,
                 tension: 0.4,
                 fill: true,
-                pointRadius: 4,
+                pointRadius: 3,
                 pointHoverRadius: 6,
                 pointBackgroundColor: colors.border,
-                pointBorderColor: '#fff',
+                pointBorderColor: '#1e1e2e',
                 pointBorderWidth: 2
             }]
         },
@@ -102,13 +102,20 @@ function createChart(tipo) {
                 tooltip: {
                     mode: 'index',
                     intersect: false,
-                    backgroundColor: 'rgba(0, 0, 0, 0.8)',
-                    titleColor: '#fff',
-                    bodyColor: '#fff',
+                    backgroundColor: 'rgba(30, 30, 46, 0.95)',
+                    titleColor: '#f4f4f5',
+                    bodyColor: '#e4e4e7',
                     borderColor: colors.border,
-                    borderWidth: 2,
+                    borderWidth: 1,
                     padding: 12,
                     displayColors: false,
+                    titleFont: {
+                        size: 13,
+                        weight: '600'
+                    },
+                    bodyFont: {
+                        size: 12
+                    },
                     callbacks: {
                         label: function(context) {
                             return `${context.parsed.y.toFixed(1)} ${unit}`;
@@ -120,13 +127,14 @@ function createChart(tipo) {
                 y: {
                     beginAtZero: false,
                     grid: {
-                        color: 'rgba(0, 0, 0, 0.05)',
+                        color: 'rgba(255, 255, 255, 0.05)',
                         drawBorder: false
                     },
                     ticks: {
-                        color: '#666',
+                        color: '#a1a1aa',
                         font: {
-                            size: 11
+                            size: 11,
+                            weight: '500'
                         },
                         callback: function(value) {
                             return value.toFixed(0) + ' ' + unit;
@@ -138,7 +146,7 @@ function createChart(tipo) {
                         display: false
                     },
                     ticks: {
-                        color: '#666',
+                        color: '#71717a',
                         font: {
                             size: 10
                         },

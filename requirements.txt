@@ -1,0 +1,14 @@
+# Django Framework
+Django==4.2.0
+
+# Cliente MQTT para comunicación con brokers
+paho-mqtt==1.6.1
+
+# Base de datos (proxima a agregar)
+# psycopg2-binary==2.9.9  #  PostgreSQL
+
+
+# Utilidades adicionales (no creo que agreguemos)
+# python-decouple==3.8    #  variables de entorno
+# djangorestframework==3.14.0  #  API REST avanzada
+# django-cors-headers==4.3.0   #  CORS

@@ -1,55 +1,365 @@
 <!DOCTYPE html>
-<html>
+<html lang="es">
 <head>
-    <title>Municipios</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Municipios - Dashboard Sonora</title>
     <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
         body {
-            font-family: Arial;
+            font-family: 'Inter', 'Segoe UI', system-ui, -apple-system, sans-serif;
+            background: linear-gradient(135deg, #1a1d29 0%, #2d1b3d 100%);
+            min-height: 100vh;
             padding: 20px;
+            color: #e4e4e7;
+            display: flex;
+            align-items: center;
+            justify-content: center;
         }
-        .btn {
-            padding: 14px 20px;
-            margin: 10px;
-            background: #6A5AE0;
-            color: white;
-            border: none;
-            border-radius: 8px;
+
+        .container {
+            max-width: 1000px;
+            width: 100%;
+            margin: 0 auto;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 50px;
+            animation: fadeInDown 0.6s ease;
+        }
+
+        .header h1 {
+            font-size: 2.8em;
+            font-weight: 700;
+            color: #f4f4f5;
+            margin-bottom: 12px;
+            letter-spacing: -1px;
+            background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .header p {
+            font-size: 1.1em;
+            color: #a1a1aa;
+            font-weight: 400;
+        }
+
+        .status-bar {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            margin-top: 20px;
+            padding: 12px 24px;
+            background: rgba(16, 185, 129, 0.1);
+            border: 1px solid rgba(16, 185, 129, 0.3);
+            border-radius: 30px;
+            display: inline-flex;
+            color: #10b981;
+            font-size: 0.9em;
+            font-weight: 600;
+        }
+
+        .status-dot {
+            width: 8px;
+            height: 8px;
+            background: #10b981;
+            border-radius: 50%;
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; transform: scale(1); }
+            50% { opacity: 0.5; transform: scale(0.95); }
+        }
+
+        .municipios-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .municipio-card {
+            background: linear-gradient(135deg, #27293d 0%, #1e1e2e 100%);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            border-radius: 16px;
+            padding: 32px;
             cursor: pointer;
-            font-size: 16px;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+            animation: fadeInUp 0.6s ease backwards;
         }
-        .btn:hover {
-            background: #5846d6;
+
+        .municipio-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%);
+            transform: scaleX(0);
+            transition: transform 0.3s ease;
+        }
+
+        .municipio-card:hover::before {
+            transform: scaleX(1);
+        }
+
+        .municipio-card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 20px 60px rgba(99, 102, 241, 0.3);
+            border-color: rgba(99, 102, 241, 0.3);
+        }
+
+        .municipio-card:nth-child(1) { animation-delay: 0.1s; }
+        .municipio-card:nth-child(2) { animation-delay: 0.2s; }
+        .municipio-card:nth-child(3) { animation-delay: 0.3s; }
+        .municipio-card:nth-child(4) { animation-delay: 0.4s; }
+        .municipio-card:nth-child(5) { animation-delay: 0.5s; }
+
+        .municipio-icon {
+            width: 56px;
+            height: 56px;
+            background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%);
+            border-radius: 14px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 20px;
+            box-shadow: 0 8px 24px rgba(99, 102, 241, 0.3);
+        }
+
+        .municipio-icon svg {
+            width: 28px;
+            height: 28px;
+            color: white;
+        }
+
+        .municipio-name {
+            font-size: 1.5em;
+            font-weight: 700;
+            color: #f4f4f5;
+            margin-bottom: 8px;
+            text-transform: capitalize;
+        }
+
+        .municipio-status {
+            font-size: 0.9em;
+            color: #a1a1aa;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .arrow-icon {
+            margin-left: auto;
+            opacity: 0;
+            transform: translateX(-10px);
+            transition: all 0.3s ease;
+        }
+
+        .municipio-card:hover .arrow-icon {
+            opacity: 1;
+            transform: translateX(0);
+        }
+
+        .loading {
+            text-align: center;
+            padding: 60px;
+        }
+
+        .loading-spinner {
+            display: inline-block;
+            width: 48px;
+            height: 48px;
+            border: 4px solid rgba(99, 102, 241, 0.2);
+            border-top: 4px solid #6366f1;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .loading-text {
+            margin-top: 20px;
+            color: #a1a1aa;
+            font-size: 1.1em;
+        }
+
+        .no-municipios {
+            text-align: center;
+            padding: 60px 20px;
+            background: linear-gradient(135deg, #27293d 0%, #1e1e2e 100%);
+            border-radius: 16px;
+            border: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        .no-municipios h3 {
+            color: #f4f4f5;
+            font-size: 1.4em;
+            margin-bottom: 12px;
+        }
+
+        .no-municipios p {
+            color: #a1a1aa;
+            font-size: 1em;
+        }
+
+        @keyframes fadeInDown {
+            from {
+                opacity: 0;
+                transform: translateY(-30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @media (max-width: 768px) {
+            .header h1 {
+                font-size: 2em;
+            }
+
+            .municipios-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        /* Status badge en el centro */
+        .center-status {
+            display: flex;
+            justify-content: center;
+            margin-top: 20px;
         }
     </style>
 </head>
 <body>
+    <div class="container">
+        <div class="header">
+            <h1>Dashboard Sonora</h1>
+            <p>Seleccione un municipio para ver el monitoreo en tiempo real</p>
+            <div class="center-status">
+                <div class="status-bar">
+                    <span class="status-dot"></span>
+                    Sistema activo
+                </div>
+            </div>
+        </div>
 
-    <h1>Seleccione un municipio</h1>
+        <div id="loading" class="loading">
+            <div class="loading-spinner"></div>
+            <div class="loading-text">Cargando municipios...</div>
+        </div>
 
-    <div id="contenedor"></div>
+        <div id="contenedor" class="municipios-grid" style="display: none;">
+            <!-- Las tarjetas se generarán dinámicamente -->
+        </div>
+
+        <div id="no-municipios" class="no-municipios" style="display: none;">
+            <h3>No hay municipios disponibles</h3>
+            <p>Esperando datos del sistema MQTT...</p>
+        </div>
+    </div>
 
     <script>
+        let primeraVez = true;
+
         async function cargarMunicipios() {
-            const res = await fetch("/api/municipios/");
-            const data = await res.json();
+            try {
+                const res = await fetch("/api/municipios/");
+                const data = await res.json();
 
-            const cont = document.getElementById("contenedor");
-            cont.innerHTML = ""; // limpiar
+                const loading = document.getElementById("loading");
+                const contenedor = document.getElementById("contenedor");
+                const noMunicipios = document.getElementById("no-municipios");
 
-            data.municipios.forEach(m => {
-                const btn = document.createElement("button");
-                btn.className = "btn";
-                btn.innerText = m.toUpperCase();
-                btn.onclick = () => {
-                    window.location.href = `/dashboard/${m}`;
-                };
-                cont.appendChild(btn);
-            });
+                // Ocultar loading después de la primera carga
+                if (primeraVez) {
+                    setTimeout(() => {
+                        loading.style.display = "none";
+                        primeraVez = false;
+                    }, 800);
+                }
+
+                if (data.municipios && data.municipios.length > 0) {
+                    contenedor.style.display = "grid";
+                    noMunicipios.style.display = "none";
+
+                    // Solo actualizar si cambió el número de municipios
+                    const municipiosActuales = contenedor.children.length;
+                    if (municipiosActuales !== data.municipios.length) {
+                        contenedor.innerHTML = "";
+
+                        data.municipios.forEach((m, index) => {
+                            const card = document.createElement("div");
+                            card.className = "municipio-card";
+                            card.style.animationDelay = `${index * 0.1}s`;
+                            card.onclick = () => {
+                                window.location.href = `/dashboard/${m}`;
+                            };
+
+                            card.innerHTML = `
+                                <div class="municipio-icon">
+                                    <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"/>
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"/>
+                                    </svg>
+                                </div>
+                                <div class="municipio-name">${m}</div>
+                                <div class="municipio-status">
+                                    Monitoreo activo
+                                    <svg class="arrow-icon" width="20" height="20" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7l5 5m0 0l-5 5m5-5H6"/>
+                                    </svg>
+                                </div>
+                            `;
+
+                            contenedor.appendChild(card);
+                        });
+                    }
+                } else {
+                    contenedor.style.display = "none";
+                    noMunicipios.style.display = "block";
+                }
+            } catch (error) {
+                console.error("Error al cargar municipios:", error);
+                const loading = document.getElementById("loading");
+                const noMunicipios = document.getElementById("no-municipios");
+
+                loading.style.display = "none";
+                noMunicipios.style.display = "block";
+            }
         }
 
-        setInterval(cargarMunicipios, 2000); // refresca cada 2s
+        // Cargar inmediatamente y luego cada 2 segundos
         cargarMunicipios();
+        setInterval(cargarMunicipios, 2000);
     </script>
-
 </body>
 </html>

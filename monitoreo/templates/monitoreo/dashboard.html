@@ -14,10 +14,11 @@
         }
 
         body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            font-family: 'Inter', 'Segoe UI', system-ui, -apple-system, sans-serif;
+            background: linear-gradient(135deg, #1a1d29 0%, #2d1b3d 100%);
             min-height: 100vh;
             padding: 20px;
+            color: #e4e4e7;
         }
 
         .container {
@@ -26,139 +27,224 @@
         }
 
         .header {
-            background: white;
-            padding: 25px;
-            border-radius: 15px;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            background: linear-gradient(135deg, #27293d 0%, #1e1e2e 100%);
+            padding: 25px 30px;
+            border-radius: 16px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
             margin-bottom: 30px;
+            border: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        .header-content {
             display: flex;
             justify-content: space-between;
             align-items: center;
+            gap: 20px;
         }
 
-        .header h1 {
-            color: #333;
-            font-size: 2em;
+        .header-title {
+            display: flex;
+            align-items: center;
+            gap: 15px;
         }
 
-        .back-btn {
-            background: #667eea;
-            color: white;
-            padding: 12px 25px;
-            border-radius: 8px;
-            text-decoration: none;
-            transition: all 0.3s;
-            font-weight: 600;
-        }
-
-        .back-btn:hover {
-            background: #5568d3;
-            transform: translateY(-2px);
-            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+        .header-title h1 {
+            color: #f4f4f5;
+            font-size: 1.8em;
+            font-weight: 700;
+            letter-spacing: -0.5px;
         }
 
         .status {
-            display: inline-block;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
             padding: 8px 16px;
-            background: #10b981;
-            color: white;
+            background: rgba(16, 185, 129, 0.15);
+            color: #10b981;
             border-radius: 20px;
-            font-size: 0.9em;
-            margin-left: 15px;
+            font-size: 0.85em;
+            font-weight: 600;
+            border: 1px solid rgba(16, 185, 129, 0.3);
+        }
+
+        .status-dot {
+            width: 8px;
+            height: 8px;
+            background: #10b981;
+            border-radius: 50%;
             animation: pulse 2s infinite;
         }
 
         @keyframes pulse {
-            0%, 100% { opacity: 1; }
-            50% { opacity: 0.7; }
+            0%, 100% { opacity: 1; transform: scale(1); }
+            50% { opacity: 0.5; transform: scale(0.95); }
+        }
+
+        .header-actions {
+            display: flex;
+            gap: 12px;
+        }
+
+        .btn {
+            padding: 12px 24px;
+            border-radius: 10px;
+            text-decoration: none;
+            transition: all 0.3s ease;
+            font-weight: 600;
+            font-size: 0.9em;
+            border: none;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .btn-secondary {
+            background: rgba(100, 116, 139, 0.2);
+            color: #cbd5e1;
+            border: 1px solid rgba(148, 163, 184, 0.2);
+        }
+
+        .btn-secondary:hover {
+            background: rgba(100, 116, 139, 0.3);
+            border-color: rgba(148, 163, 184, 0.4);
+            transform: translateY(-2px);
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%);
+            color: white;
+            border: 1px solid rgba(139, 92, 246, 0.3);
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 24px rgba(139, 92, 246, 0.4);
         }
 
         .cards-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
-            gap: 25px;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 24px;
             margin-bottom: 30px;
         }
 
         .card {
-            background: white;
-            border-radius: 15px;
-            padding: 25px;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
-            transition: transform 0.3s, box-shadow 0.3s;
+            background: linear-gradient(135deg, #27293d 0%, #1e1e2e 100%);
+            border-radius: 16px;
+            padding: 28px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
+            transition: all 0.3s ease;
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 3px;
+            background: var(--card-color, #6366f1);
+            opacity: 0.8;
         }
 
         .card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 15px 40px rgba(0,0,0,0.3);
+            transform: translateY(-4px);
+            box-shadow: 0 12px 40px rgba(0, 0, 0, 0.5);
+            border-color: rgba(255, 255, 255, 0.1);
         }
 
         .card-header {
             display: flex;
             justify-content: space-between;
-            align-items: center;
+            align-items: flex-start;
             margin-bottom: 20px;
-            padding-bottom: 15px;
-            border-bottom: 2px solid #f0f0f0;
+            padding-bottom: 16px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.06);
         }
 
         .card-title {
-            font-size: 1.3em;
-            color: #333;
-            text-transform: capitalize;
+            font-size: 1.1em;
+            color: #a1a1aa;
+            text-transform: uppercase;
             font-weight: 600;
+            letter-spacing: 0.5px;
+        }
+
+        .card-value-container {
+            text-align: right;
         }
 
         .card-value {
-            font-size: 2.5em;
-            font-weight: bold;
-            color: #667eea;
+            font-size: 2.8em;
+            font-weight: 700;
+            color: #f4f4f5;
             transition: transform 0.2s;
+            line-height: 1;
+            background: linear-gradient(135deg, var(--card-color, #6366f1) 0%, var(--card-color-light, #8b5cf6) 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
         }
 
         .card-unit {
-            font-size: 0.6em;
-            color: #666;
-            margin-left: 5px;
+            font-size: 0.5em;
+            color: #71717a;
+            margin-left: 6px;
+            font-weight: 500;
         }
 
         .card-timestamp {
-            font-size: 0.85em;
-            color: #999;
-            margin-top: 10px;
+            font-size: 0.8em;
+            color: #71717a;
+            margin-top: 12px;
+            display: flex;
+            align-items: center;
+            gap: 6px;
         }
 
         .chart-container {
             position: relative;
-            height: 250px;
+            height: 220px;
             margin-top: 20px;
+            background: rgba(0, 0, 0, 0.2);
+            border-radius: 12px;
+            padding: 15px;
         }
 
         .no-data {
             text-align: center;
-            padding: 60px 20px;
-            background: white;
-            border-radius: 15px;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            padding: 80px 20px;
+            background: linear-gradient(135deg, #27293d 0%, #1e1e2e 100%);
+            border-radius: 16px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
+            border: 1px solid rgba(255, 255, 255, 0.05);
         }
 
         .no-data h2 {
-            color: #666;
-            margin-bottom: 15px;
+            color: #a1a1aa;
+            margin-bottom: 16px;
+            font-weight: 600;
         }
 
         .no-data p {
-            color: #999;
+            color: #71717a;
+            font-size: 0.95em;
         }
 
         .loading {
             display: inline-block;
-            width: 20px;
-            height: 20px;
-            border: 3px solid #f3f3f3;
-            border-top: 3px solid #667eea;
+            width: 24px;
+            height: 24px;
+            border: 3px solid rgba(99, 102, 241, 0.2);
+            border-top: 3px solid #6366f1;
             border-radius: 50%;
             animation: spin 1s linear infinite;
+            margin-bottom: 20px;
         }
 
         @keyframes spin {
@@ -167,36 +253,101 @@
         }
 
         /* Colores específicos por tipo */
-        .temperatura { border-left: 5px solid #ef4444; }
-        .humedad { border-left: 5px solid #3b82f6; }
-        .iluminacion { border-left: 5px solid #f59e0b; }
-        .presion { border-left: 5px solid #8b5cf6; }
-        .viento { border-left: 5px solid #10b981; }
-        .precipitacion { border-left: 5px solid #06b6d4; }
-        .co2 { border-left: 5px solid #dc2626; }
-        .ruido { border-left: 5px solid #ea580c; }
+        .temperatura {
+            --card-color: #ef4444;
+            --card-color-light: #f87171;
+        }
 
-        @media (max-width: 768px) {
+        .humedad {
+            --card-color: #3b82f6;
+            --card-color-light: #60a5fa;
+        }
+
+        .iluminacion {
+            --card-color: #f59e0b;
+            --card-color-light: #fbbf24;
+        }
+
+        .presion {
+            --card-color: #8b5cf6;
+            --card-color-light: #a78bfa;
+        }
+
+        .viento {
+            --card-color: #10b981;
+            --card-color-light: #34d399;
+        }
+
+        .precipitacion {
+            --card-color: #06b6d4;
+            --card-color-light: #22d3ee;
+        }
+
+        .co2 {
+            --card-color: #dc2626;
+            --card-color-light: #ef4444;
+        }
+
+        .ruido {
+            --card-color: #ea580c;
+            --card-color-light: #f97316;
+        }
+
+        /* Responsive */
+        @media (max-width: 1024px) {
             .cards-grid {
                 grid-template-columns: 1fr;
             }
+        }
 
-            .header {
+        @media (max-width: 768px) {
+            .header-content {
                 flex-direction: column;
-                text-align: center;
-                gap: 15px;
+                align-items: stretch;
             }
+
+            .header-actions {
+                flex-direction: column;
+            }
+
+            .btn {
+                justify-content: center;
+            }
+        }
+
+        /* Icon styles */
+        .icon {
+            width: 18px;
+            height: 18px;
         }
     </style>
 </head>
 <body>
     <div class="container">
         <div class="header">
-            <div>
-                <h1>Dashboard - {{ municipio|title }}</h1>
-                <span class="status">● En vivo</span>
+            <div class="header-content">
+                <div class="header-title">
+                    <h1>{{ municipio|title }}</h1>
+                    <span class="status">
+                        <span class="status-dot"></span>
+                        En vivo
+                    </span>
+                </div>
+                <div class="header-actions">
+                    <button onclick="exportarCSV()" class="btn btn-primary">
+                        <svg class="icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
+                        </svg>
+                        Exportar CSV
+                    </button>
+                    <a href="{% url 'monitoreo:municipios' %}" class="btn btn-secondary">
+                        <svg class="icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"/>
+                        </svg>
+                        Volver
+                    </a>
+                </div>
             </div>
-            <a href="{% url 'monitoreo:municipios' %}" class="back-btn">← Volver a Municipios</a>
         </div>
 
         <div id="cards-container" class="cards-grid">
@@ -206,7 +357,7 @@
         <div id="no-data" class="no-data" style="display: none;">
             <div class="loading"></div>
             <h2>Esperando datos...</h2>
-            <p>Conectando con el sistema de monitoreo</p>
+            <p>Conectando con el sistema de monitoreo de {{ municipio|title }}</p>
         </div>
     </div>
 
@@ -216,6 +367,51 @@
         // Inicializar dashboard con el municipio actual
         const municipio = "{{ municipio }}";
         initDashboard(municipio, 3000);
+
+        // Función para exportar a CSV
+        async function exportarCSV() {
+            try {
+                // Obtener historial completo
+                const response = await fetch(`/api/municipio/${municipio}/historial/`);
+
+                if (!response.ok) {
+                    alert('No hay datos para exportar');
+                    return;
+                }
+
+                const historial = await response.json();
+
+                // Construir CSV
+                let csv = 'Tipo,Valor,Fecha,Hora\n';
+
+                Object.entries(historial).forEach(([tipo, datos]) => {
+                    datos.forEach(punto => {
+                        const fecha = new Date(punto.timestamp);
+                        const fechaStr = fecha.toLocaleDateString('es-MX');
+                        const horaStr = fecha.toLocaleTimeString('es-MX');
+                        csv += `${tipo},${punto.valor},${fechaStr},${horaStr}\n`;
+                    });
+                });
+
+                // Descargar archivo
+                const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+                const link = document.createElement('a');
+                const url = URL.createObjectURL(blob);
+
+                link.setAttribute('href', url);
+                link.setAttribute('download', `${municipio}_historial_${new Date().toISOString().split('T')[0]}.csv`);
+                link.style.visibility = 'hidden';
+
+                document.body.appendChild(link);
+                link.click();
+                document.body.removeChild(link);
+
+                console.log('✅ CSV exportado correctamente');
+            } catch (error) {
+                console.error('❌ Error al exportar CSV:', error);
+                alert('Error al exportar los datos');
+            }
+        }
     </script>
 </body>
 </html>
