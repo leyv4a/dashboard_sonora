@@ -1,14 +1,221 @@
-{% extends "monitoreo/base.html" %}
 {% load static %}
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard - {{ municipio|title }}</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
 
-{% block content %}
-<h1>Dashboard: {{ municipio|upper }}</h1>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
 
-<canvas id="graficaTemperatura"></canvas>
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
 
-<script>
-    const municipio = "{{ municipio }}";
-</script>
+        .header {
+            background: white;
+            padding: 25px;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            margin-bottom: 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
 
-<script src="{% static 'monitoreo/js/charts.js' %}"></script>
-{% endblock %}
+        .header h1 {
+            color: #333;
+            font-size: 2em;
+        }
+
+        .back-btn {
+            background: #667eea;
+            color: white;
+            padding: 12px 25px;
+            border-radius: 8px;
+            text-decoration: none;
+            transition: all 0.3s;
+            font-weight: 600;
+        }
+
+        .back-btn:hover {
+            background: #5568d3;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+        }
+
+        .status {
+            display: inline-block;
+            padding: 8px 16px;
+            background: #10b981;
+            color: white;
+            border-radius: 20px;
+            font-size: 0.9em;
+            margin-left: 15px;
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.7; }
+        }
+
+        .cards-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 25px;
+            margin-bottom: 30px;
+        }
+
+        .card {
+            background: white;
+            border-radius: 15px;
+            padding: 25px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            transition: transform 0.3s, box-shadow 0.3s;
+        }
+
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 40px rgba(0,0,0,0.3);
+        }
+
+        .card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            padding-bottom: 15px;
+            border-bottom: 2px solid #f0f0f0;
+        }
+
+        .card-title {
+            font-size: 1.3em;
+            color: #333;
+            text-transform: capitalize;
+            font-weight: 600;
+        }
+
+        .card-value {
+            font-size: 2.5em;
+            font-weight: bold;
+            color: #667eea;
+            transition: transform 0.2s;
+        }
+
+        .card-unit {
+            font-size: 0.6em;
+            color: #666;
+            margin-left: 5px;
+        }
+
+        .card-timestamp {
+            font-size: 0.85em;
+            color: #999;
+            margin-top: 10px;
+        }
+
+        .chart-container {
+            position: relative;
+            height: 250px;
+            margin-top: 20px;
+        }
+
+        .no-data {
+            text-align: center;
+            padding: 60px 20px;
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+        }
+
+        .no-data h2 {
+            color: #666;
+            margin-bottom: 15px;
+        }
+
+        .no-data p {
+            color: #999;
+        }
+
+        .loading {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border: 3px solid #f3f3f3;
+            border-top: 3px solid #667eea;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        /* Colores específicos por tipo */
+        .temperatura { border-left: 5px solid #ef4444; }
+        .humedad { border-left: 5px solid #3b82f6; }
+        .iluminacion { border-left: 5px solid #f59e0b; }
+        .presion { border-left: 5px solid #8b5cf6; }
+        .viento { border-left: 5px solid #10b981; }
+        .precipitacion { border-left: 5px solid #06b6d4; }
+        .co2 { border-left: 5px solid #dc2626; }
+        .ruido { border-left: 5px solid #ea580c; }
+
+        @media (max-width: 768px) {
+            .cards-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .header {
+                flex-direction: column;
+                text-align: center;
+                gap: 15px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <div>
+                <h1>Dashboard - {{ municipio|title }}</h1>
+                <span class="status">● En vivo</span>
+            </div>
+            <a href="{% url 'monitoreo:municipios' %}" class="back-btn">← Volver a Municipios</a>
+        </div>
+
+        <div id="cards-container" class="cards-grid">
+            <!-- Las cards se generarán dinámicamente -->
+        </div>
+
+        <div id="no-data" class="no-data" style="display: none;">
+            <div class="loading"></div>
+            <h2>Esperando datos...</h2>
+            <p>Conectando con el sistema de monitoreo</p>
+        </div>
+    </div>
+
+    <!-- Script para gráficas -->
+    <script src="{% static 'monitoreo/js/charts.js' %}"></script>
+    <script>
+        // Inicializar dashboard con el municipio actual
+        const municipio = "{{ municipio }}";
+        initDashboard(municipio, 3000);
+    </script>
+</body>
+</html>
