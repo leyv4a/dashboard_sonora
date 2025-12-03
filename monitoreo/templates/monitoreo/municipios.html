@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Municipios</title>
+    <style>
+        body {
+            font-family: Arial;
+            padding: 20px;
+        }
+        .btn {
+            padding: 14px 20px;
+            margin: 10px;
+            background: #6A5AE0;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+        .btn:hover {
+            background: #5846d6;
+        }
+    </style>
+</head>
+<body>
+
+    <h1>Seleccione un municipio</h1>
+
+    <div id="contenedor"></div>
+
+    <script>
+        async function cargarMunicipios() {
+            const res = await fetch("/api/municipios/");
+            const data = await res.json();
+
+            const cont = document.getElementById("contenedor");
+            cont.innerHTML = ""; // limpiar
+
+            data.municipios.forEach(m => {
+                const btn = document.createElement("button");
+                btn.className = "btn";
+                btn.innerText = m.toUpperCase();
+                btn.onclick = () => {
+                    window.location.href = `/dashboard/${m}`;
+                };
+                cont.appendChild(btn);
+            });
+        }
+
+        setInterval(cargarMunicipios, 2000); // refresca cada 2s
+        cargarMunicipios();
+    </script>
+
+</body>
+</html>

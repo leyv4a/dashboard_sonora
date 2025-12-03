@@ -2,9 +2,13 @@
 {% load static %}
 
 {% block content %}
-<h1>Dashboard Sonora</h1>
+<h1>Dashboard: {{ municipio|upper }}</h1>
 
 <canvas id="graficaTemperatura"></canvas>
+
+<script>
+    const municipio = "{{ municipio }}";
+</script>
 
 <script src="{% static 'monitoreo/js/charts.js' %}"></script>
 {% endblock %}
