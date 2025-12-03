@@ -5,15 +5,14 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="cb1627ef-b07e-470a-8e97-c5dd4f33664b" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/.idea/dashboard-sonora.iml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/inspectionProfiles/profiles_settings.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/modules.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/vcs.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/dashboard/mqtt_client.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/monitoreo/templates/monitoreo/dashboard.html" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/monitoreo/urls.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/monitoreo/static/monitoreo/js/charts.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/monitoreo/templates/monitoreo/base.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/dashboard/__init__.py" beforeDir="false" afterPath="$PROJECT_DIR$/dashboard/__init__.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/monitoreo/models.py" beforeDir="false" afterPath="$PROJECT_DIR$/monitoreo/models.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/monitoreo/templates/monitoreo/dashboard.html" beforeDir="false" afterPath="$PROJECT_DIR$/monitoreo/templates/monitoreo/dashboard.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/monitoreo/urls.py" beforeDir="false" afterPath="$PROJECT_DIR$/monitoreo/urls.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/monitoreo/views.py" beforeDir="false" afterPath="$PROJECT_DIR$/monitoreo/views.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -23,8 +22,8 @@
   <component name="FileTemplateManagerImpl">
     <option name="RECENT_TEMPLATES">
       <list>
-        <option value="HTML File" />
         <option value="Python Script" />
+        <option value="HTML File" />
       </list>
     </option>
   </component>
@@ -46,7 +45,7 @@
     "RunOnceActivity.ShowReadmeOnStart": "true",
     "RunOnceActivity.TerminalTabsStorage.copyFrom.TerminalArrangementManager.252": "true",
     "RunOnceActivity.git.unshallow": "true",
-    "git-widget-placeholder": "master",
+    "git-widget-placeholder": "main",
     "settings.editor.selected.configurable": "com.jetbrains.python.configuration.PyActiveSdkModuleConfigurable"
   }
 }]]></component>
@@ -74,10 +73,6 @@
           <url>file://$PROJECT_DIR$/dashboard/urls.py</url>
           <line>16</line>
           <option name="timeStamp" value="1" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
-          <url>file://$PROJECT_DIR$/dashboard/mqtt_client.py</url>
-          <option name="timeStamp" value="2" />
         </line-breakpoint>
       </breakpoints>
     </breakpoint-manager>

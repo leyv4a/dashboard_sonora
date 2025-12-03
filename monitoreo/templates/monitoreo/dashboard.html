@@ -1,11 +1,10 @@
-<!doctype html>
-<html>
-<head>
-  <meta charset="utf-8"/>
-  <title>Dashboard Sonora</title>
-</head>
-<body>
-  <h1>Dashboard IoT Sonora</h1>
-  <p>¡Listo! Esta es la plantilla base.</p>
-</body>
-</html>
+{% extends "monitoreo/base.html" %}
+{% load static %}
+
+{% block content %}
+<h1>Dashboard Sonora</h1>
+
+<canvas id="graficaTemperatura"></canvas>
+
+<script src="{% static 'monitoreo/js/charts.js' %}"></script>
+{% endblock %}
