@@ -5,11 +5,11 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="cb1627ef-b07e-470a-8e97-c5dd4f33664b" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/requirements.txt" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/monitoreo/templates/monitoreo/mapa.html" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/monitoreo/static/monitoreo/js/charts.js" beforeDir="false" afterPath="$PROJECT_DIR$/monitoreo/static/monitoreo/js/charts.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/monitoreo/templates/monitoreo/dashboard.html" beforeDir="false" afterPath="$PROJECT_DIR$/monitoreo/templates/monitoreo/dashboard.html" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/monitoreo/templates/monitoreo/municipios.html" beforeDir="false" afterPath="$PROJECT_DIR$/monitoreo/templates/monitoreo/municipios.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/monitoreo/urls.py" beforeDir="false" afterPath="$PROJECT_DIR$/monitoreo/urls.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/monitoreo/views.py" beforeDir="false" afterPath="$PROJECT_DIR$/monitoreo/views.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -35,18 +35,18 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent"><![CDATA[{
-  "keyToString": {
-    "DefaultHtmlFileTemplate": "HTML File",
-    "ModuleVcsDetector.initialDetectionPerformed": "true",
-    "RunOnceActivity.ShowReadmeOnStart": "true",
-    "RunOnceActivity.TerminalTabsStorage.copyFrom.TerminalArrangementManager.252": "true",
-    "RunOnceActivity.git.unshallow": "true",
-    "git-widget-placeholder": "main",
-    "last_opened_file_path": "C:/Users/leyv4a/Documents/python/iot2025/dashboard-sonora",
-    "settings.editor.selected.configurable": "com.jetbrains.python.configuration.PyActiveSdkModuleConfigurable"
+  <component name="PropertiesComponent">{
+  &quot;keyToString&quot;: {
+    &quot;DefaultHtmlFileTemplate&quot;: &quot;HTML File&quot;,
+    &quot;ModuleVcsDetector.initialDetectionPerformed&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.TerminalTabsStorage.copyFrom.TerminalArrangementManager.252&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.git.unshallow&quot;: &quot;true&quot;,
+    &quot;git-widget-placeholder&quot;: &quot;main&quot;,
+    &quot;last_opened_file_path&quot;: &quot;C:/Users/leyv4a/Documents/python/iot2025/dashboard-sonora&quot;,
+    &quot;settings.editor.selected.configurable&quot;: &quot;com.jetbrains.python.configuration.PyActiveSdkModuleConfigurable&quot;
   }
-}]]></component>
+}</component>
   <component name="SharedIndexes">
     <attachedChunks>
       <set>

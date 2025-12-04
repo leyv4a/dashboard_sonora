@@ -10,8 +10,11 @@ urlpatterns = [
     # Vista del dashboard de un municipio específico
     path("dashboard/<str:municipio>/", views.dashboard_view, name="dashboard"),
 
-    # Página de municipios
+    # Vista de municipios
     path("municipios/", views.municipios_view, name="municipios"),
+
+    # Vista del mapa
+    path("mapa/", views.mapa_view, name="mapa"),
 
     # APIs
     path("api/", views.api, name="api"),

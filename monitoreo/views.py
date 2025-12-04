@@ -126,3 +126,6 @@ def api_municipio_tipo(request, municipio, tipo):
 def get_municipios(request):
     municipios = list(latest_data.keys())
     return JsonResponse({"municipios": municipios})
+
+def mapa_view(request):
+    return render(request, "monitoreo/mapa.html")

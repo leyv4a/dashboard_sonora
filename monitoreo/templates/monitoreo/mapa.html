@@ -1,0 +1,609 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mapa de Sonora - Monitoreo IoT</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', 'Segoe UI', system-ui, -apple-system, sans-serif;
+            background: linear-gradient(135deg, #1a1d29 0%, #2d1b3d 100%);
+            min-height: 100vh;
+            padding: 20px;
+            color: #e4e4e7;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #27293d 0%, #1e1e2e 100%);
+            padding: 25px 30px;
+            border-radius: 16px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
+            margin-bottom: 30px;
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .header h1 {
+            color: #f4f4f5;
+            font-size: 1.8em;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .status {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 8px 16px;
+            background: rgba(16, 185, 129, 0.15);
+            color: #10b981;
+            border-radius: 20px;
+            font-size: 0.85em;
+            font-weight: 600;
+            border: 1px solid rgba(16, 185, 129, 0.3);
+            margin-left: 15px;
+        }
+
+        .status-dot {
+            width: 8px;
+            height: 8px;
+            background: #10b981;
+            border-radius: 50%;
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
+        }
+
+        .btn {
+            padding: 12px 24px;
+            background: rgba(100, 116, 139, 0.2);
+            color: #cbd5e1;
+            border: 1px solid rgba(148, 163, 184, 0.2);
+            border-radius: 10px;
+            text-decoration: none;
+            font-weight: 600;
+            transition: all 0.3s;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .btn:hover {
+            background: rgba(100, 116, 139, 0.3);
+            transform: translateY(-2px);
+        }
+
+        .mapa-container {
+            background: linear-gradient(135deg, #27293d 0%, #1e1e2e 100%);
+            border-radius: 16px;
+            padding: 40px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            margin-bottom: 30px;
+        }
+
+        .mapa-svg {
+            width: 100%;
+            max-width: 1000px;
+            margin: 0 auto;
+            display: block;
+        }
+
+        /* Estilos de los municipios - SIN TRANSFORM */
+        .municipio-group {
+            cursor: pointer;
+            transition: opacity 0.3s ease;
+        }
+
+        .municipio-group:hover {
+            opacity: 0.9;
+        }
+
+        .municipio-circle {
+            transition: filter 0.3s ease;
+            filter: drop-shadow(0 4px 12px rgba(0, 0, 0, 0.3));
+        }
+
+        .municipio-group:hover .municipio-circle {
+            filter: drop-shadow(0 8px 24px currentColor);
+        }
+
+        .municipio-label {
+            font-size: 14px;
+            font-weight: 600;
+            fill: #f4f4f5;
+            pointer-events: none;
+            text-shadow: 0 2px 8px rgba(0, 0, 0, 0.8);
+        }
+
+        .municipio-temp {
+            font-size: 18px;
+            font-weight: 700;
+            pointer-events: none;
+            text-shadow: 0 2px 8px rgba(0, 0, 0, 0.8);
+        }
+
+        /* Colores según temperatura */
+        .temp-frio { fill: #3b82f6; }
+        .temp-templado { fill: #10b981; }
+        .temp-calido { fill: #f59e0b; }
+        .temp-caliente { fill: #ef4444; }
+
+        /* Tooltip */
+        .tooltip {
+            position: fixed;
+            background: rgba(30, 30, 46, 0.98);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 12px;
+            padding: 16px;
+            pointer-events: none;
+            opacity: 0;
+            transition: opacity 0.2s;
+            z-index: 1000;
+            box-shadow: 0 12px 48px rgba(0, 0, 0, 0.6);
+            min-width: 200px;
+            max-width: 300px;
+        }
+
+        .tooltip.visible {
+            opacity: 1;
+        }
+
+        .tooltip-title {
+            font-size: 1.1em;
+            font-weight: 700;
+            color: #f4f4f5;
+            margin-bottom: 12px;
+            text-transform: capitalize;
+            border-bottom: 2px solid rgba(255, 255, 255, 0.1);
+            padding-bottom: 8px;
+        }
+
+        .tooltip-item {
+            display: flex;
+            justify-content: space-between;
+            padding: 6px 0;
+            font-size: 0.9em;
+        }
+
+        .tooltip-label {
+            color: #a1a1aa;
+            text-transform: capitalize;
+        }
+
+        .tooltip-value {
+            color: #f4f4f5;
+            font-weight: 600;
+        }
+
+        .tooltip-action {
+            margin-top: 12px;
+            padding-top: 12px;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            text-align: center;
+            color: #6366f1;
+            font-size: 0.85em;
+        }
+
+        /* Leyenda */
+        .leyenda {
+            background: linear-gradient(135deg, #27293d 0%, #1e1e2e 100%);
+            border-radius: 16px;
+            padding: 24px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        .leyenda-title {
+            font-size: 1.1em;
+            font-weight: 600;
+            color: #f4f4f5;
+            margin-bottom: 16px;
+        }
+
+        .leyenda-items {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 12px;
+        }
+
+        .leyenda-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .leyenda-color {
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+        }
+
+        .leyenda-text {
+            color: #a1a1aa;
+            font-size: 0.9em;
+        }
+
+        .loading {
+            text-align: center;
+            padding: 60px;
+            color: #a1a1aa;
+        }
+
+        .loading-spinner {
+            display: inline-block;
+            width: 48px;
+            height: 48px;
+            border: 4px solid rgba(99, 102, 241, 0.2);
+            border-top: 4px solid #6366f1;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin-bottom: 20px;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .error-message {
+            color: #ef4444;
+            background: rgba(239, 68, 68, 0.1);
+            border: 1px solid rgba(239, 68, 68, 0.3);
+            padding: 12px;
+            border-radius: 8px;
+            margin-top: 10px;
+        }
+
+        @media (max-width: 768px) {
+            .header {
+                flex-direction: column;
+                gap: 15px;
+            }
+
+            .mapa-container {
+                padding: 20px;
+            }
+
+            .leyenda-items {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>
+                🗺️ Mapa de Sonora
+                <span class="status">
+                    <span class="status-dot"></span>
+                    Tiempo Real
+                </span>
+            </h1>
+            <a href="{% url 'monitoreo:municipios' %}" class="btn">
+                <svg width="18" height="18" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"/>
+                </svg>
+                Volver
+            </a>
+        </div>
+
+        <div class="mapa-container">
+            <div id="loading" class="loading">
+                <div class="loading-spinner"></div>
+                <p>Cargando datos del mapa...</p>
+            </div>
+
+            <svg id="mapa-sonora" class="mapa-svg" viewBox="0 0 1000 800" style="display: none;">
+                <!-- Los municipios formarán la silueta del estado -->
+            </svg>
+
+            <div class="tooltip" id="tooltip">
+                <div class="tooltip-title" id="tooltip-title"></div>
+                <div id="tooltip-content"></div>
+                <div class="tooltip-action">👆 Click para ver dashboard</div>
+            </div>
+        </div>
+
+        <div class="leyenda">
+            <div class="leyenda-title">Escala de Temperatura</div>
+            <div class="leyenda-items">
+                <div class="leyenda-item">
+                    <div class="leyenda-color temp-frio"></div>
+                    <span class="leyenda-text">Frío (< 20°C)</span>
+                </div>
+                <div class="leyenda-item">
+                    <div class="leyenda-color temp-templado"></div>
+                    <span class="leyenda-text">Templado (20-30°C)</span>
+                </div>
+                <div class="leyenda-item">
+                    <div class="leyenda-color temp-calido"></div>
+                    <span class="leyenda-text">Cálido (30-35°C)</span>
+                </div>
+                <div class="leyenda-item">
+                    <div class="leyenda-color temp-caliente"></div>
+                    <span class="leyenda-text">Caliente (> 35°C)</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const municipiosPosiciones = {
+            hermosillo: { x: 480, y: 350, label: 'Hermosillo' },
+            guaymas: { x: 300, y: 520, label: 'Guaymas' },
+            empalme: { x: 320, y: 550, label: 'Empalme' },
+            nogales: { x: 280, y: 110, label: 'Nogales' },
+            obregon: { x: 420, y: 590, label: 'Cd. Obregón' },
+            navojoa: { x: 500, y: 680, label: 'Navojoa' },
+            caborca: { x: 220, y: 240, label: 'Caborca' },
+            aguaprieta: { x: 750, y: 120, label: 'Agua Prieta' },
+            sanluisrc: { x: 160, y: 150, label: 'San Luis RC' },
+            huatabampo: { x: 460, y: 710, label: 'Huatabampo' }
+        };
+
+        const svg = document.getElementById('mapa-sonora');
+        const tooltip = document.getElementById('tooltip');
+        const loading = document.getElementById('loading');
+        let municipiosData = {};
+        let updateInterval = null;
+
+        // Validar y formatear valor numérico
+        function validarValor(valor, decimales = 1) {
+            const num = parseFloat(valor);
+            return isNaN(num) ? 0 : num.toFixed(decimales);
+        }
+
+        // Determinar color según temperatura
+        function getColorClass(temp) {
+            const temperatura = parseFloat(temp);
+            if (isNaN(temperatura)) return 'temp-templado';
+            if (temperatura < 20) return 'temp-frio';
+            if (temperatura < 30) return 'temp-templado';
+            if (temperatura < 35) return 'temp-calido';
+            return 'temp-caliente';
+        }
+
+        // Crear marcador de municipio
+        function crearMarcador(municipio, datos, posicion) {
+            const temp = datos.temperatura?.valor ?? 0;
+            const colorClass = getColorClass(temp);
+
+            const group = document.createElementNS('http://www.w3.org/2000/svg', 'g');
+            group.setAttribute('class', 'municipio-group');
+            group.setAttribute('data-municipio', municipio);
+
+            // Círculo del marcador
+            const circle = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
+            circle.setAttribute('cx', posicion.x);
+            circle.setAttribute('cy', posicion.y);
+            circle.setAttribute('r', '25');
+            circle.setAttribute('class', `municipio-circle ${colorClass}`);
+            group.appendChild(circle);
+
+            // Aro exterior
+            const outerCircle = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
+            outerCircle.setAttribute('cx', posicion.x);
+            outerCircle.setAttribute('cy', posicion.y);
+            outerCircle.setAttribute('r', '30');
+            outerCircle.setAttribute('fill', 'none');
+            outerCircle.setAttribute('stroke', 'currentColor');
+            outerCircle.setAttribute('stroke-width', '2');
+            outerCircle.setAttribute('opacity', '0.3');
+            outerCircle.setAttribute('class', colorClass);
+            group.appendChild(outerCircle);
+
+            // Temperatura en el centro
+            const tempText = document.createElementNS('http://www.w3.org/2000/svg', 'text');
+            tempText.setAttribute('x', posicion.x);
+            tempText.setAttribute('y', posicion.y + 6);
+            tempText.setAttribute('text-anchor', 'middle');
+            tempText.setAttribute('class', 'municipio-temp');
+            tempText.setAttribute('fill', '#fff');
+            tempText.textContent = Math.round(parseFloat(temp)) + '°';
+            group.appendChild(tempText);
+
+            // Etiqueta del municipio
+            const label = document.createElementNS('http://www.w3.org/2000/svg', 'text');
+            label.setAttribute('x', posicion.x);
+            label.setAttribute('y', posicion.y + 45);
+            label.setAttribute('text-anchor', 'middle');
+            label.setAttribute('class', 'municipio-label');
+            label.textContent = posicion.label;
+            group.appendChild(label);
+
+            // Eventos
+            group.addEventListener('mouseenter', (e) => mostrarTooltip(municipio, datos, e));
+            group.addEventListener('mousemove', (e) => moverTooltip(e));
+            group.addEventListener('mouseleave', ocultarTooltip);
+            group.addEventListener('click', () => {
+                window.location.href = `/dashboard/${municipio}/`;
+            });
+
+            return group;
+        }
+
+        // Mostrar tooltip con posicionamiento inteligente
+        function mostrarTooltip(municipio, datos, event) {
+            const tooltipTitle = document.getElementById('tooltip-title');
+            const tooltipContent = document.getElementById('tooltip-content');
+
+            tooltipTitle.textContent = municipiosPosiciones[municipio]?.label || municipio;
+
+            let content = '';
+            const tiposValidos = ['temperatura', 'humedad', 'viento'];
+
+            Object.entries(datos).forEach(([tipo, info]) => {
+                if (!tiposValidos.includes(tipo) || !info || info.valor === undefined) return;
+
+                const unit = tipo === 'temperatura' ? '°C' :
+                             tipo === 'humedad' ? '%' :
+                             tipo === 'viento' ? 'km/h' : '';
+
+                content += `
+                    <div class="tooltip-item">
+                        <span class="tooltip-label">${tipo}:</span>
+                        <span class="tooltip-value">${validarValor(info.valor)} ${unit}</span>
+                    </div>
+                `;
+            });
+
+            if (!content) {
+                content = '<div class="tooltip-item"><span class="tooltip-label">Sin datos disponibles</span></div>';
+            }
+
+            tooltipContent.innerHTML = content;
+            tooltip.classList.add('visible');
+            moverTooltip(event);
+        }
+
+        // Mover tooltip con límites de viewport
+        function moverTooltip(event) {
+            const tooltipRect = tooltip.getBoundingClientRect();
+            const padding = 20;
+
+            let left = event.clientX + padding;
+            let top = event.clientY - padding;
+
+            // Ajustar si se sale por la derecha
+            if (left + tooltipRect.width > window.innerWidth) {
+                left = event.clientX - tooltipRect.width - padding;
+            }
+
+            // Ajustar si se sale por abajo
+            if (top + tooltipRect.height > window.innerHeight) {
+                top = event.clientY - tooltipRect.height - padding;
+            }
+
+            // Ajustar si se sale por arriba
+            if (top < 0) {
+                top = padding;
+            }
+
+            // Ajustar si se sale por la izquierda
+            if (left < 0) {
+                left = padding;
+            }
+
+            tooltip.style.left = left + 'px';
+            tooltip.style.top = top + 'px';
+        }
+
+        // Ocultar tooltip
+        function ocultarTooltip() {
+            tooltip.classList.remove('visible');
+        }
+
+        // Actualizar mapa con datos
+        function actualizarMapa() {
+            const existingMarkers = svg.querySelectorAll('.municipio-group');
+            existingMarkers.forEach(marker => marker.remove());
+
+            Object.entries(municipiosData).forEach(([municipio, datos]) => {
+                if (municipiosPosiciones[municipio]) {
+                    const marcador = crearMarcador(municipio, datos, municipiosPosiciones[municipio]);
+                    svg.appendChild(marcador);
+                }
+            });
+        }
+
+        // Cargar datos de municipios
+        async function cargarDatos() {
+            try {
+                const municipiosRes = await fetch('/api/municipios/');
+
+                if (!municipiosRes.ok) {
+                    throw new Error(`Error HTTP: ${municipiosRes.status}`);
+                }
+
+                const municipiosJson = await municipiosRes.json();
+
+                if (!municipiosJson.municipios || !Array.isArray(municipiosJson.municipios)) {
+                    throw new Error('Formato de respuesta inválido');
+                }
+
+                const dataPromises = municipiosJson.municipios.map(async (municipio) => {
+                    try {
+                        const dataRes = await fetch(`/api/municipio/${municipio}/`);
+                        if (dataRes.ok) {
+                            const data = await dataRes.json();
+                            return { municipio, data };
+                        }
+                    } catch (error) {
+                        console.warn(`Error cargando datos de ${municipio}:`, error);
+                    }
+                    return null;
+                });
+
+                const results = await Promise.all(dataPromises);
+
+                results.forEach(result => {
+                    if (result) {
+                        municipiosData[result.municipio] = result.data;
+                    }
+                });
+
+                loading.style.display = 'none';
+                svg.style.display = 'block';
+                actualizarMapa();
+
+            } catch (error) {
+                console.error('Error cargando datos:', error);
+                loading.innerHTML = `
+                    <div class="error-message">
+                        <strong>Error al cargar datos del mapa</strong>
+                        <p>${error.message}</p>
+                    </div>
+                `;
+            }
+        }
+
+        // Iniciar y configurar actualización automática
+        function iniciar() {
+            cargarDatos();
+            updateInterval = setInterval(cargarDatos, 5000);
+        }
+
+        // Limpiar al salir de la página
+        window.addEventListener('beforeunload', () => {
+            if (updateInterval) {
+                clearInterval(updateInterval);
+            }
+        });
+
+        // Pausar actualización cuando la pestaña no está visible
+        document.addEventListener('visibilitychange', () => {
+            if (document.hidden) {
+                if (updateInterval) {
+                    clearInterval(updateInterval);
+                }
+            } else {
+                updateInterval = setInterval(cargarDatos, 5000);
+            }
+        });
+
+        iniciar();
+    </script>
+</body>
+</html>
